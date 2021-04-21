@@ -1,5 +1,6 @@
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Svea.Checkout.Models
 {
@@ -24,7 +25,7 @@ namespace Svea.Checkout.Models
         /// </summary>
         /// <remarks>Data type: Url. Max length: 500.</remarks>
         [JsonProperty("CheckoutValidationCallBackUri")]
-        public string CheckoutValidationCallBackUri { get; set; }
+        public Uri CheckoutValidationCallBackUri { get; set; }
 
         /// <summary>
         /// <para>URI to a location that expects callbacks from the Checkout whenever an order’s state is changed (confirmed, final, etc.).</para>
@@ -43,28 +44,28 @@ namespace Svea.Checkout.Models
         /// </summary>
         /// <remarks>Required. Data type: Url. Max length: 500. Min length: 1.</remarks>
         [JsonProperty("PushUri")]
-        public string PushUri { get; set; }
+        public Uri PushUri { get; set; }
 
         /// <summary>
         /// URI to a page with webshop specific terms.
         /// </summary>
         /// <remarks>Required. Data type: Url. Max length: 500. Min length: 1.</remarks>
         [JsonProperty("TermsUri")]
-        public string TermsUri { get; set; }
+        public Uri TermsUri { get; set; }
 
         /// <summary>
         /// URI to the page in the webshop displaying the Checkout. May not contain order specific information.
         /// </summary>
         /// <remarks>Required. Data type: Url. Max length: 500. Min length: 1.</remarks>
         [JsonProperty("CheckoutUri")]
-        public string CheckoutUri { get; set; }
+        public Uri CheckoutUri { get; set; }
 
         /// <summary>
         /// URI to the page in the webshop displaying specific information to a customer after the order has been confirmed. May not contain order specific information.
         /// </summary>
         /// <remarks>Required. Data type: Url. Max length: 500. Min length: 1.</remarks>
         [JsonProperty("ConfirmationUri")]
-        public string ConfirmationUri { get; set; }
+        public Uri ConfirmationUri { get; set; }
 
         /// <summary>
         /// List of valid CampaignIDs. If used, a list of available part payment campaign options will be filtered through the chosen list.
