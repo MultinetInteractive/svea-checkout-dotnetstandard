@@ -31,7 +31,7 @@ namespace Svea.Checkout.Validation
             if (sizeOfData < minLength || sizeOfData > maxLength)
             {
                 throw new SveaInputValidationException(
-                    $"{fieldName} must be between or equal to {minLength} and {maxLength}"
+                    $"{fieldName} must be between or equal to {minLength} and {maxLength} characters long"
                 );
             }
         }
