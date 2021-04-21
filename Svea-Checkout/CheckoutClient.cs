@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Svea.Checkout.Exceptions;
 using Svea.Checkout.Models;
 using Svea.Checkout.Validation;
@@ -71,7 +75,15 @@ namespace Svea.Checkout
         public async Task<SveaApiResponse<CheckoutOrder>> CreateOrderAsync(CreateOrderModel data)
         {
             data.Validate();
-            throw new NotImplementedException();
+
+            string requestUrl = $"{_baseApiUrl}/api/orders";
+            AuthenticateRequest(data);
+
+            var createOrderRequest = await ApiClient.PostAsync(requestUrl,
+                new StringContent(SveaUtils.ObjectToJsonConverter(data), Encoding.UTF8, "application/json")
+            );
+
+            return await HandleResponse<CheckoutOrder>(createOrderRequest);
         }
 
         /// <summary>
@@ -84,7 +96,15 @@ namespace Svea.Checkout
         public async Task<SveaApiResponse<CheckoutOrder>> UpdateOrderAsync(long orderId, UpdateOrderModel data)
         {
             data.Validate();
-            throw new NotImplementedException();
+
+            string requestUrl = $"{_baseApiUrl}/api/orders/{orderId}";
+            AuthenticateRequest(data);
+
+            var updateOrderRequest = await ApiClient.PostAsync(requestUrl,
+                new StringContent(SveaUtils.ObjectToJsonConverter(data), Encoding.UTF8, "application/json")
+            );
+
+            return await HandleResponse<CheckoutOrder>(updateOrderRequest);
         }
 
         /// <summary>
@@ -95,7 +115,11 @@ namespace Svea.Checkout
         /// <returns><see cref="CheckoutOrder" /></returns>
         public async Task<SveaApiResponse<CheckoutOrder>> GetOrderAsync(long orderId)
         {
-            throw new NotImplementedException();
+            string requestUrl = $"{_baseApiUrl}/api/orders/{orderId}";
+            AuthenticateRequest();
+            var getOrderResult = await ApiClient.GetAsync(requestUrl);
+
+            return await HandleResponse<CheckoutOrder>(getOrderResult);
         }
 
         /// <summary>
@@ -106,7 +130,62 @@ namespace Svea.Checkout
         /// <returns>Collection of <see cref="CampaignCodeInfo" /></returns>
         public async Task<SveaApiResponse<List<CampaignCodeInfo>>> GetAvailablePartPaymentCampaignsAsync(bool isCompany)
         {
-            throw new NotImplementedException();
+            string requestUrl = $"{_baseApiUrl}/api/util/GetAvailablePartPaymentCampaigns?isCompany={isCompany}";
+
+            AuthenticateRequest();
+
+            var getCampaignResult = await ApiClient.GetAsync(requestUrl);
+
+            return await HandleResponse<List<CampaignCodeInfo>>(getCampaignResult);
+        }
+
+        internal async Task<SveaApiResponse<T>> HandleResponse<T>(HttpResponseMessage request)
+        {
+            var response = new SveaApiResponse<T>
+            {
+                HttpStatusCode = request.StatusCode
+            };
+
+            var resultString = await request.Content.ReadAsStringAsync();
+
+            if (request.StatusCode == HttpStatusCode.OK)
+            {
+                response.Success = true;
+                response.Data = JsonConvert.DeserializeObject<T>(resultString);
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(resultString.Trim()) &&
+                    request.Headers.TryGetValues("http_code", out var http_code) &&
+                    request.Headers.TryGetValues("ErrorMessage", out var errorMessage))
+                {
+                    resultString = $"{string.Join(", ", http_code ?? new List<string>())}: {string.Join(", ", errorMessage ?? new List<string>())}";
+                }
+                response.Success = false;
+                response.ErrorMessage = resultString;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Fixes the authorization/authentication against the API endpoints automatically
+        /// </summary>
+        /// <param name="input">Data input</param>
+        internal void AuthenticateRequest(object input = null)
+        {
+            SveaUtils.CreateAuthenticationToken(
+                out string authToken,
+                out string timestamp,
+                _merchantId,
+                _sharedSecret,
+                SveaUtils.ObjectToJsonConverter(input)
+            );
+
+            ApiClient.DefaultRequestHeaders.Remove("Authorization");
+            ApiClient.DefaultRequestHeaders.Remove("Timestamp");
+            ApiClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Svea {authToken}");
+            ApiClient.DefaultRequestHeaders.TryAddWithoutValidation("Timestamp", timestamp);
         }
     }
 }

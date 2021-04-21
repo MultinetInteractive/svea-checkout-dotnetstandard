@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Svea.Checkout
 {
-    public static class Utilities
+    public static class SveaUtils
     {
         public static string GetLocaleString(this Locale locale)
         {
@@ -35,6 +35,8 @@ namespace Svea.Checkout
 
         public static string ObjectToJsonConverter(object inputObject)
         {
+            if (inputObject == null) return null;
+
             return JsonConvert.SerializeObject(inputObject, Formatting.Indented, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore

@@ -149,7 +149,7 @@ namespace Svea.Checkout.Models
         /// </list>
         /// </summary>
         [JsonProperty("SveaWillBuyOrder")]
-        public bool SveaWillBuyOrder { get; set; }
+        public bool? SveaWillBuyOrder { get; set; }
 
         /// <summary>
         /// 
