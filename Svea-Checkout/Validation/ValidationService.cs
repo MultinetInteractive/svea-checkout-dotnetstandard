@@ -1,5 +1,5 @@
+﻿using Svea.Checkout.Exceptions;
 using System.Collections;
-using Svea.Checkout.Exceptions;
 
 namespace Svea.Checkout.Validation
 {
@@ -10,6 +10,7 @@ namespace Svea.Checkout.Validation
             var valid = data switch
             {
                 string s => !string.IsNullOrEmpty(s),
+                object o => o != null,
                 _ => throw new SveaInputValidationException(
                     $"{fieldName} should not be empty"
                 )
@@ -35,9 +36,9 @@ namespace Svea.Checkout.Validation
             }
         }
 
-        public static void MustNotBeEmptyArray(object array, string fieldName)
+        public static void MustNotBeEmptyList(IList list, string fieldName)
         {
-            if (array as IList == null || ((IList)array).Count < 1)
+            if (list == null || list.Count < 1)
             {
                 throw new SveaInputValidationException(
                     $"{fieldName} must be a list, and contain at least one item"
@@ -45,9 +46,9 @@ namespace Svea.Checkout.Validation
             }
         }
 
-        public static void MustBeArray(object array, string fieldName)
+        public static void MustBeList(IList list, string fieldName)
         {
-            if (array as IList == null)
+            if (list == null)
             {
                 throw new SveaInputValidationException(
                     $"{fieldName} must be a list"

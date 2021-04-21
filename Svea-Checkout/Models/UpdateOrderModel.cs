@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Svea.Checkout.Validation;
 
 namespace Svea.Checkout.Models
@@ -24,7 +23,7 @@ namespace Svea.Checkout.Models
         public void Validate()
         {
             ValidationService.MustNotBeEmpty(Cart, "Order Cart");
-            ValidationService.MustNotBeEmptyArray(Cart?.Items, "Order items");
+            ValidationService.MustNotBeEmptyList(Cart?.Items, "Order items");
 
             if (!string.IsNullOrEmpty(MerchantData))
             {

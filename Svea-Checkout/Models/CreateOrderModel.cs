@@ -1,8 +1,8 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Svea.Checkout.Validation;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Svea.Checkout.Validation;
 
 namespace Svea.Checkout.Models
 {
@@ -19,7 +19,7 @@ namespace Svea.Checkout.Models
         /// Locale for the order
         /// </summary>
         /// <remarks>Supported: sv-SE, da-DK, de-DE, en-US, fi-FI, nn-NO.</remarks>
-        [JsonProperty("locale")]
+        [JsonProperty("locale"), JsonConverter(typeof(StringEnumConverter))]
         public Locale Locale { get; set; }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Svea.Checkout.Models
         private void ValidateOrderCart()
         {
             ValidationService.MustNotBeEmpty(Cart, "Order Cart");
-            ValidationService.MustNotBeEmptyArray(Cart?.Items, "Order items");
+            ValidationService.MustNotBeEmptyList(Cart?.Items, "Order items");
         }
         private void ValidateClientOrderNumber()
         {
