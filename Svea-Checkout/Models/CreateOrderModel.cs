@@ -39,7 +39,7 @@ namespace Svea.Checkout.Models
 
 
         [JsonProperty("presetValues")]
-        public List<PresetValue> PresetValues { get; set; } = new List<PresetValue>();
+        public List<PresetValue> PresetValues { get; set; }
 
 
         [JsonProperty("identityFlags")]
@@ -47,13 +47,13 @@ namespace Svea.Checkout.Models
 
 
         [JsonProperty("requiresElectronicIdAuthentication")]
-        public bool RequiresElectronicIdAuthentication { get; set; }
+        public bool? RequiresElectronicIdAuthentication { get; set; }
 
         /// <summary>
         /// Provided by Svea to select partners.
         /// </summary>
         [JsonProperty("partnerKey")]
-        public Guid PartnerKey { get; set; }
+        public Guid? PartnerKey { get; set; }
 
         /// <summary>
         /// Metadata visible to the store
@@ -88,15 +88,22 @@ namespace Svea.Checkout.Models
         {
             ValidationService.MustNotBeEmpty(MerchantSettings, "Merchant Settings");
 
-            ValidationService.MustNotBeEmpty(MerchantSettings.TermsUri, $"Merchant Settings: TermsUri");
-            ValidationService.MustNotBeEmpty(MerchantSettings.CheckoutUri, $"Merchant Settings: CheckoutUri");
-            ValidationService.MustNotBeEmpty(MerchantSettings.ConfirmationUri, $"Merchant Settings: ConfirmationUri");
-            ValidationService.MustNotBeEmpty(MerchantSettings.PushUri, $"Merchant Settings: PushUri");
+            ValidationService.LengthMustBeBetween(MerchantSettings.TermsUri?.ToString(), 1, 500, $"Merchant Settings: TermsUri");
+            ValidationService.LengthMustBeBetween(MerchantSettings.CheckoutUri?.ToString(), 1, 500, $"Merchant Settings: CheckoutUri");
+            ValidationService.LengthMustBeBetween(MerchantSettings.ConfirmationUri?.ToString(), 1, 500, $"Merchant Settings: ConfirmationUri");
+            ValidationService.LengthMustBeBetween(MerchantSettings.PushUri?.ToString(), 1, 500, $"Merchant Settings: PushUri");
         }
         private void ValidateOrderCart()
         {
             ValidationService.MustNotBeEmpty(Cart, "Order Cart");
             ValidationService.MustNotBeEmptyList(Cart?.Items, "Order items");
+
+            foreach (var item in Cart?.Items)
+            {
+                ValidationService.LengthMustBeBetween(item.ArticleNumber, 0, 256, "Order item: ArticleNumber");
+                ValidationService.LengthMustBeBetween(item.Name, 0, 40, "Order item: Name");
+                ValidationService.LengthMustBeBetween(item.Unit, 0, 4, "Order item: Unit");
+            }
         }
         private void ValidateClientOrderNumber()
         {
