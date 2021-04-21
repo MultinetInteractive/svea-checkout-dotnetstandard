@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Svea.Checkout
 {
@@ -30,6 +31,14 @@ namespace Svea.Checkout
             var hashBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(message + _sharedSecret + timestamp));
             var hashString = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
             token = Convert.ToBase64String(Encoding.UTF8.GetBytes(_merchantId + ":" + hashString));
+        }
+
+        public static string ObjectToJsonConverter(object inputObject)
+        {
+            return JsonConvert.SerializeObject(inputObject, Formatting.Indented, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
     }
 }
