@@ -3,10 +3,25 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Svea.Checkout</RootNamespace>
+    <Company>MultiNet Interactive AB</Company>
+    <Product>Svea Checkout API Client</Product>
+    <PackageId>Svea.Checkout.Client</PackageId>
+    <Authors>Chris Gårdenberg (itssimple)</Authors>
+    <Copyright>©2021 MultiNet Interactive AB</Copyright>
+    <Description>API Client to integrate with the Svea Checkout API</Description>
+    <RepositoryUrl>https://github.com/MultinetInteractive/svea-checkout-dotnetstandard</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
