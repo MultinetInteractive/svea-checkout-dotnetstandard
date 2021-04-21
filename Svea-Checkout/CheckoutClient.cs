@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Svea.Checkout.Exceptions;
+using Svea.Checkout.Models;
+using Svea.Checkout.Validation;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Svea.Checkout.Exceptions;
-using Svea.Checkout.Models;
-using Svea.Checkout.Validation;
 
 namespace Svea.Checkout
 {
@@ -83,7 +82,7 @@ namespace Svea.Checkout
                 new StringContent(SveaUtils.ObjectToJsonConverter(data), Encoding.UTF8, "application/json")
             );
 
-            return await HandleResponse<CheckoutOrder>(createOrderRequest);
+            return await HandleResponse<CheckoutOrder>(createOrderRequest, HttpStatusCode.Created, HttpStatusCode.OK);
         }
 
         /// <summary>
@@ -139,8 +138,13 @@ namespace Svea.Checkout
             return await HandleResponse<List<CampaignCodeInfo>>(getCampaignResult);
         }
 
-        internal async Task<SveaApiResponse<T>> HandleResponse<T>(HttpResponseMessage request)
+        internal async Task<SveaApiResponse<T>> HandleResponse<T>(HttpResponseMessage request, params HttpStatusCode[] acceptedStatusCodes)
         {
+            if (acceptedStatusCodes.Length == 0)
+            {
+                acceptedStatusCodes = new[] { HttpStatusCode.OK };
+            }
+
             var response = new SveaApiResponse<T>
             {
                 HttpStatusCode = request.StatusCode
@@ -148,7 +152,7 @@ namespace Svea.Checkout
 
             var resultString = await request.Content.ReadAsStringAsync();
 
-            if (request.StatusCode == HttpStatusCode.OK)
+            if (acceptedStatusCodes.Contains(request.StatusCode))
             {
                 response.Success = true;
                 response.Data = JsonConvert.DeserializeObject<T>(resultString);

@@ -92,6 +92,7 @@ namespace Svea.Checkout.Models
             ValidationService.LengthMustBeBetween(MerchantSettings.CheckoutUri?.ToString(), 1, 500, $"Merchant Settings: CheckoutUri");
             ValidationService.LengthMustBeBetween(MerchantSettings.ConfirmationUri?.ToString(), 1, 500, $"Merchant Settings: ConfirmationUri");
             ValidationService.LengthMustBeBetween(MerchantSettings.PushUri?.ToString(), 1, 500, $"Merchant Settings: PushUri");
+            ValidationService.LengthMustBeBetween(MerchantSettings.CheckoutValidationCallBackUri?.ToString(), 0, 500, $"Merchant Settings: PushUri");
         }
         private void ValidateOrderCart()
         {
