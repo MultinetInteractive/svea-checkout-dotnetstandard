@@ -10,7 +10,9 @@
     <Copyright>©2021 MultiNet Interactive AB</Copyright>
     <Description>API Client to integrate with the Svea Checkout API</Description>
     <RepositoryUrl>https://github.com/MultinetInteractive/svea-checkout-dotnetstandard</RepositoryUrl>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression></PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
+    <None Include="..\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
