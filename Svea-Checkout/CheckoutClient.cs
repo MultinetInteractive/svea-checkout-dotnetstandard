@@ -2,7 +2,6 @@
 using Svea.Checkout.Exceptions;
 using Svea.Checkout.Models;
 using Svea.Checkout.Validation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -42,14 +41,14 @@ namespace Svea.Checkout
             _sharedSecret = sharedSecret;
             _baseApiUrl = baseApiUrl;
 
+            ValidateData();
+
             if (ApiClient == null)
             {
                 ApiClient = new HttpClient();
                 ApiClient.DefaultRequestHeaders.Remove("User-Agent");
                 ApiClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "MultiNet Svea Checkout API Client");
             }
-
-            ValidateData();
         }
 
         private void ValidateData()
