@@ -13,7 +13,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression></PackageLicenseExpression>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <LangVersion>latest</LangVersion>
     <PackageReleaseNotes>Changed to .NET Standard 2.0, to be usable in .NET Framework 4.8</PackageReleaseNotes>
   </PropertyGroup>

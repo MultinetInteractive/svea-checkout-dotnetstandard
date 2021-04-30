@@ -27,7 +27,7 @@ namespace Svea.Checkout
         private readonly string _sharedSecret;
         private readonly string _baseApiUrl;
 
-        private static HttpClient ApiClient { get; set; }
+        private HttpClient ApiClient { get; set; }
 
         /// <summary>
         /// Creates a new instance of the CheckoutClient that is used to communicate with the Svea API
