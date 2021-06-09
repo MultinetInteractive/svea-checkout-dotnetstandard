@@ -2,6 +2,7 @@
 using Svea.Checkout.Exceptions;
 using Svea.Checkout.Models;
 using Svea.Checkout.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -27,6 +28,8 @@ namespace Svea.Checkout
         private readonly string _sharedSecret;
         private readonly string _baseApiUrl;
 
+        private readonly bool _debug = false;
+
         private HttpClient ApiClient { get; set; }
 
         /// <summary>
@@ -40,6 +43,8 @@ namespace Svea.Checkout
             _merchantId = merchantId;
             _sharedSecret = sharedSecret;
             _baseApiUrl = baseApiUrl;
+
+            _debug = true;
 
             ValidateData();
 
@@ -151,6 +156,19 @@ namespace Svea.Checkout
 
             var resultString = await request.Content.ReadAsStringAsync();
 
+            if (_debug)
+            {
+                Console.WriteLine("Content: " + resultString);
+                if (request.Headers.TryGetValues("http_code", out var http_code))
+                    Console.WriteLine("http_code: " + http_code);
+
+                var headers = request.Headers.ToDictionary(k => k.Key, k => k.Value);
+                foreach (var h in headers)
+                {
+                    Console.WriteLine("Header: " + h.Key + " = " + string.Join(", ", h.Value));
+                }
+            }
+
             if (acceptedStatusCodes.Contains(request.StatusCode))
             {
                 response.Success = true;
@@ -158,12 +176,14 @@ namespace Svea.Checkout
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(resultString.Trim()) &&
-                    request.Headers.TryGetValues("http_code", out var http_code) &&
-                    request.Headers.TryGetValues("ErrorMessage", out var errorMessage))
+                if (string.IsNullOrWhiteSpace(resultString.Trim()) || resultString == "null")
                 {
+                    request.Headers.TryGetValues("http_code", out var http_code);
+                    request.Headers.TryGetValues("ErrorMessage", out var errorMessage);
+
                     resultString = $"{string.Join(", ", http_code ?? new List<string>())}: {string.Join(", ", errorMessage ?? new List<string>())}";
                 }
+
                 response.Success = false;
                 response.ErrorMessage = resultString;
             }
